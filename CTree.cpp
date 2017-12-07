@@ -155,6 +155,11 @@ int CTree::iGetNodesAmountInTree() {
     return temp;
 }
 
+int CTree::iGetRandomNodeNumberFromTree() {
+    int randomNumber = rand() % iGetNodesAmountInTree() + 1;
+    return randomNumber;
+}
+
 
 
 

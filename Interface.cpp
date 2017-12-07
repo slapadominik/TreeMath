@@ -2,6 +2,7 @@
 #include <sstream>
 #include "Interface.h"
 #include "WrongVariablesValuesAmountException.h"
+#include "RandomNodeGenerator.h"
 
 
 Interface::Interface() {
@@ -94,14 +95,14 @@ void Interface::vRunApp() {
             std::cout<<"Pomyslnie polaczono drzewa."<<std::endl;
         }
         else if (s_command_param0=="childs"){
-            std::cout<< pc_tree->iGetNodesAmountInTree()<<std::endl;
+            std::string formula = RandomNodeGenerator::generateRandomMathFormula();
+            std::cout<<formula<<std::endl;
         }
         else if (s_command_param0!="exit"){
             std::cout<<"Bledna komenda"<<std::endl;
         }
         else if(s_command_param0=="exit"){
             delete pc_tree;
-            std::cout<<"Siema"<<std::endl;
         }
 
     }

@@ -31,6 +31,7 @@ public:
     double dCalculateTreeValue(std::vector<double> variablesValues);
     CNode* getLeaf();
     int iGetNodesAmountInTree();
+    int iGetRandomNodeNumberFromTree();
 
 private:
     std::string s_name;
