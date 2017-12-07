@@ -147,6 +147,14 @@ bool CTree::bClearVariables() {
     return false;
 }
 
+int CTree::iGetNodesAmountInTree() {
+    int *piCounter = new int(0);
+    root->iGetNodeChildrenAmount(piCounter);
+    int temp = *piCounter;
+    delete piCounter;
+    return temp;
+}
+
 
 
 

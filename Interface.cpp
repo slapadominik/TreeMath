@@ -93,6 +93,9 @@ void Interface::vRunApp() {
             pc_tree = result;
             std::cout<<"Pomyslnie polaczono drzewa."<<std::endl;
         }
+        else if (s_command_param0=="childs"){
+            std::cout<< pc_tree->iGetNodesAmountInTree()<<std::endl;
+        }
         else if (s_command_param0!="exit"){
             std::cout<<"Bledna komenda"<<std::endl;
         }
@@ -100,6 +103,7 @@ void Interface::vRunApp() {
             delete pc_tree;
             std::cout<<"Siema"<<std::endl;
         }
+
     }
 }
 

@@ -27,6 +27,7 @@ public:
     bool bIsDataEmpty();
     bool bReplaceChild(int iOffset, CNode *newChild);
     double dCalculateValue(std::vector<double> variablesValues);
+    int* iGetNodeChildrenAmount(int *piCounter);
     CNode* nGetLeaf();
 
 private:

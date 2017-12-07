@@ -30,10 +30,12 @@ public:
     int iBuildTree(std::string &sFormula);
     double dCalculateTreeValue(std::vector<double> variablesValues);
     CNode* getLeaf();
+    int iGetNodesAmountInTree();
 
 private:
     std::string s_name;
     CNode *root;
+
     std::vector<std::string> split(std::string &stringToSplit, char regnex);
 
 };
