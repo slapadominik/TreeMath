@@ -202,6 +202,14 @@ bool CNode::bReplaceChild(int iOffset, CNode *newChild) {
     return false;
 }
 
+int* CNode::iGetNodeChildrenAmount(int *piCounter) {
+    *piCounter+=1;
+    for (int i=0;i<child_nodes.size();i++){
+        child_nodes.at(i)->iGetNodeChildrenAmount(piCounter);
+    }
+    return piCounter;
+}
+
 
 
 
