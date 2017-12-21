@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include "CNode.h"
-#include "StringValidator.h"
+#include "StringUtils.h"
 #include <cmath>
 #include <sstream>
 
@@ -45,22 +45,22 @@ void CNode::vSetDataAndCreateChildNodesAndSetParent(std::string &sData, int iAmo
 
 void CNode::vCreateNodes(std::vector<std::string> formulaSplitted, int *iOffset) {
     if (*iOffset<formulaSplitted.size()){
-        if (StringValidator::bIsTwoArgumentsOperator(formulaSplitted.at(*iOffset))){
+        if (StringUtils::bIsTwoArgumentsOperator(formulaSplitted.at(*iOffset))){
             vSetDataAndCreateChildNodesAndSetParent(formulaSplitted.at(*iOffset), 2);
             *iOffset=*iOffset+1;
             child_nodes.at(0)->vCreateNodes(formulaSplitted, iOffset);
             *iOffset=*iOffset+1;
             child_nodes.at(1)->vCreateNodes(formulaSplitted, iOffset);
         }
-        else if (StringValidator::bIsOneArgumentOperator(formulaSplitted.at(*iOffset))) {
+        else if (StringUtils::bIsOneArgumentOperator(formulaSplitted.at(*iOffset))) {
             vSetDataAndCreateChildNodesAndSetParent(formulaSplitted.at(*iOffset), 1);
             *iOffset=*iOffset+1;
             child_nodes.at(0)->vCreateNodes(formulaSplitted, iOffset);
         }
-        else if (StringValidator::bIsNumber(formulaSplitted.at(*iOffset))){
+        else if (StringUtils::bIsNumber(formulaSplitted.at(*iOffset))){
             s_data=formulaSplitted.at(*iOffset);
         }
-        else if (StringValidator::bIsVariable(formulaSplitted.at(*iOffset))){
+        else if (StringUtils::bIsVariable(formulaSplitted.at(*iOffset))){
             s_data=formulaSplitted.at(*iOffset);
             if (!b_is_element_present_in_variables_vector(s_data)){
                 variables.push_back(s_data);
@@ -101,7 +101,7 @@ void CNode::vPrintVariables() {
 
 
 double CNode::dCalculateValue(std::vector<double> variablesValues) {
-    if (StringValidator::bIsTwoArgumentsOperator(s_data)){
+    if (StringUtils::bIsTwoArgumentsOperator(s_data)){
         if (s_data=="+"){
             return child_nodes.at(0)->dCalculateValue(variablesValues) +
                     child_nodes.at(1)->dCalculateValue(variablesValues);
@@ -119,7 +119,7 @@ double CNode::dCalculateValue(std::vector<double> variablesValues) {
                     child_nodes.at(1)->dCalculateValue(variablesValues);
         }
     }
-    if (StringValidator::bIsOneArgumentOperator(s_data)){
+    if (StringUtils::bIsOneArgumentOperator(s_data)){
         if (s_data=="sin"){
             return sin(child_nodes.at(0)->dCalculateValue(variablesValues));
         }
@@ -127,10 +127,10 @@ double CNode::dCalculateValue(std::vector<double> variablesValues) {
             return cos(child_nodes.at(0)->dCalculateValue(variablesValues));
         }
     }
-    if (StringValidator::bIsNumber(s_data)){
+    if (StringUtils::bIsNumber(s_data)){
         return std::stod(s_data);
     }
-    if (StringValidator::bIsVariable(s_data)){
+    if (StringUtils::bIsVariable(s_data)){
         return variablesValues.at(i_get_variable_offset(s_data));
     }
 }
@@ -158,7 +158,7 @@ CNode* CNode::nGetLeaf() {
 }
 
 bool CNode::bIsLeaf() {
-    return (StringValidator::bIsNumber(s_data) || StringValidator::bIsVariable(s_data));
+    return (StringUtils::bIsNumber(s_data) || StringUtils::bIsVariable(s_data));
 }
 
 void CNode::vRemoveChildren() {
@@ -191,7 +191,7 @@ void CNode::vClearVariables() {
 
 bool CNode::bReplaceChild(int iOffset, CNode *newChild) {
     if (iOffset<child_nodes.size()){
-        if (StringValidator::bIsVariable(child_nodes.at(iOffset)->s_data)){
+        if (StringUtils::bIsVariable(child_nodes.at(iOffset)->s_data)){
             int var_offset = i_get_variable_offset(child_nodes.at(iOffset)->s_data);
             variables.erase(variables.begin()+var_offset);
         }
@@ -208,6 +208,14 @@ int* CNode::iGetNodeChildrenAmount(int *piCounter) {
         child_nodes.at(i)->iGetNodeChildrenAmount(piCounter);
     }
     return piCounter;
+}
+
+void CNode::vSetData(std::string sData) {
+    s_data = sData;
+}
+
+std::string CNode::sGetData() {
+    return s_data;
 }
 
 

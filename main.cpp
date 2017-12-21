@@ -1,12 +1,17 @@
 #include <iostream>
+#include <cstdlib>
+#include <time.h>
 #include "Interface.h"
-#include "StringValidator.h"
+#include "StringUtils.h"
+#include "RandomNodeGenerator.h"
 
 
 int main() {
-
-    Interface cUserInterface;
-    cUserInterface.vRunApp();
-
-return 0;
+    CNode* node = RandomNodeGenerator::generateRandomTree();
+    std::cout<<node->toString()<<std::endl;
+    delete node;
+    return 0;
 }
+
+
+

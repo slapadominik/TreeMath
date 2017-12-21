@@ -2,7 +2,7 @@
 #include "CTree.h"
 #include "WrongVariablesValuesAmountException.h"
 #include "EmptyTreeException.h"
-#include "StringValidator.h"
+#include "StringUtils.h"
 
 CTree::CTree() {
     s_name="def_name";
@@ -112,10 +112,10 @@ bool CTree::b_is_formula_correct(std::string &formula) {
     std::vector<std::string> formula_splitted = split(formula,' ');
     int i_nodes_counter = 1;
     for (int i=0; i<formula_splitted.size();i++){
-        if (StringValidator::bIsTwoArgumentsOperator(formula_splitted.at(i))){
+        if (StringUtils::bIsTwoArgumentsOperator(formula_splitted.at(i))){
             i_nodes_counter+=2;
         }
-        else if (StringValidator::bIsOneArgumentOperator(formula_splitted.at(i))){
+        else if (StringUtils::bIsOneArgumentOperator(formula_splitted.at(i))){
             i_nodes_counter++;
         }
     }

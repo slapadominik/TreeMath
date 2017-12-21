@@ -9,7 +9,7 @@
 
 class EmptyTreeException : public std::exception{
 public:
-    EmptyTreeException(std::string msg);
+    EmptyTreeException(std::string number);
     std::string getMessage();
 private:
     std::string msg;

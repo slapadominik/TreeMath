@@ -21,6 +21,7 @@ public:
     void vPrintVariables();
     void vRemoveChildren();
     void vClearVariables();
+    void vSetData(std::string sData);
     void vAddChild(CNode *nodeToAdd);
     bool bRemoveChild(int iOffset);
     bool bIsLeaf();
@@ -28,6 +29,7 @@ public:
     bool bReplaceChild(int iOffset, CNode *newChild);
     double dCalculateValue(std::vector<double> variablesValues);
     int* iGetNodeChildrenAmount(int *piCounter);
+    std::string sGetData();
     CNode* nGetLeaf();
 
 private:

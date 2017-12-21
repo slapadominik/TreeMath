@@ -80,23 +80,19 @@ void Interface::vRunApp() {
                 std::cout<<ERROR_MSG_PARAMS_ARENT_NUMBERS<<std::endl;
             }
         }
-        else if (s_command_param0=="join"){
+        else if (s_command_param0=="join") {
             std::string formula_substring = s_command.substr(4);
             CTree treeToAdd;
             CTree *result;
             result = new CTree();
-            if (treeToAdd.iBuildTree(formula_substring)==ERROR_CODE_INCORRECT_FORMULA_REPAIRED_TREE){
-                std::cout<<ERROR_MSG_INCORRECT_FORMULA_REPAIRED_TREE<<std::endl;
+            if (treeToAdd.iBuildTree(formula_substring) == ERROR_CODE_INCORRECT_FORMULA_REPAIRED_TREE) {
+                std::cout << ERROR_MSG_INCORRECT_FORMULA_REPAIRED_TREE << std::endl;
             }
             treeToAdd.bPrintTree();
             *result = *pc_tree + treeToAdd;
             delete pc_tree;
             pc_tree = result;
-            std::cout<<"Pomyslnie polaczono drzewa."<<std::endl;
-        }
-        else if (s_command_param0=="childs"){
-            std::string formula = RandomNodeGenerator::generateRandomMathFormula();
-            std::cout<<formula<<std::endl;
+            std::cout << "Pomyslnie polaczono drzewa." << std::endl;
         }
         else if (s_command_param0!="exit"){
             std::cout<<"Bledna komenda"<<std::endl;
