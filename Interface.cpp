@@ -44,7 +44,7 @@ void Interface::vRunApp() {
 
         if (s_command_param0=="enter"){
             std::string formula_substring = s_command.substr(5);
-            pc_tree->bClearVariables();
+            pc_tree->vClearVariables();
             if (pc_tree->iBuildTree(formula_substring)==ERROR_CODE_INCORRECT_FORMULA_REPAIRED_TREE){
                 std::cout<<ERROR_MSG_INCORRECT_FORMULA_REPAIRED_TREE<<std::endl;
             }
@@ -97,10 +97,6 @@ void Interface::vRunApp() {
         else if (s_command_param0!="exit"){
             std::cout<<"Bledna komenda"<<std::endl;
         }
-        else if(s_command_param0=="exit"){
-            delete pc_tree;
-        }
-
     }
 }
 
