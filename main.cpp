@@ -7,9 +7,8 @@
 
 
 int main() {
-    CNode* node = RandomNodeGenerator::generateRandomTree();
-    std::cout<<node->toString()<<std::endl;
-    delete node;
+    Interface userInterface;
+    userInterface.vRunApp();
     return 0;
 }
 

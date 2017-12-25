@@ -8,6 +8,7 @@
 
 class CNode {
     friend class CTree;
+    friend class RandomNodeGenerator;
 public:
     CNode();
     CNode(std::string sData);
@@ -16,6 +17,7 @@ public:
 
     std::string toString();
     void vSetDataAndCreateChildNodesAndSetParent(std::string &sData, int iAmountOfNodes);
+    void vCreateChildNodes(int iAmountOfChildren);
     void vCreateNodes(std::vector<std::string> formulaSplitted, int *iOffset);
     void vPrintNodes();
     void vPrintVariables();
@@ -31,6 +33,7 @@ public:
     int* iGetNodeChildrenAmount(int *piCounter);
     std::string sGetData();
     CNode* nGetLeaf();
+    CNode* getChild(int iChildOffset);
 
 private:
     std::string s_data;

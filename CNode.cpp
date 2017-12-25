@@ -71,9 +71,6 @@ void CNode::vCreateNodes(std::vector<std::string> formulaSplitted, int *iOffset)
         if (bIsDataEmpty()){
             s_data="1";
         }
-        else{
-            std::cout<<"Kutang"<<std::endl;
-        }
     }
 
 }
@@ -216,6 +213,20 @@ void CNode::vSetData(std::string sData) {
 
 std::string CNode::sGetData() {
     return s_data;
+}
+
+void CNode::vCreateChildNodes(int iAmountOfChildren) {
+    for (int i=0; i<iAmountOfChildren;i++){
+        child_nodes.push_back(new CNode());
+        child_nodes.at(i)->parent=this;
+    }
+}
+
+CNode *CNode::getChild(int iChildOffset) {
+    if (iChildOffset<child_nodes.size()){
+        return child_nodes.at(iChildOffset);
+    }
+    return NULL;
 }
 
 
