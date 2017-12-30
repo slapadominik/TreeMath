@@ -8,16 +8,18 @@
 #define TWO_ARGUMENTS_OPERATOR_ARRAY_SIZE 4
 #define ONE_ARGUMENT_OPERATOR_ARRAY_SIZE 2
 #define RANDOM_MAX_GENERATE_NUMBER 20
-#define ALPHABET_SIZE 26
+#define ALPHABET_SIZE 2
 
 #include "CNode.h"
+#include "CTree.h"
 
-class RandomNodeGenerator {
+class RandomTreeGenerator {
 public:
-    static CNode* generateRandomTree();
+    static CTree* generateRandomTree();
+    static CTree* generateRandomTreeOrLeaf();
 private:
-    static void generateRandomLeaf(CNode* node);
-    static void generateRandomNodes(CNode* node);
+    static void generateRandomLeaf(CTree *tree);
+    static void generateRandomNodes(CNode* node, CTree *workingTree);
     static const char ca_variables[]; //ca = char array
     static const char ca_two_arguments_operators[];
     static const std::string ca_one_argument_operators[];

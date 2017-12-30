@@ -5,20 +5,33 @@
 #include "WrongVariablesValuesAmountException.h"
 #include "EmptyTreeException.h"
 #include "StringUtils.h"
+#include "RandomTreeGenerator.h"
 
 CTree::CTree() {
     s_name="def_name";
     root = new CNode();
+    accuracy_rate=0;
+
 }
 
 CTree::CTree(std::string sName) {
     s_name=sName;
     root = new CNode();
+    accuracy_rate=0;
 }
 
 CTree::CTree(CTree &toCopy) {
     s_name = toCopy.s_name+"_copy";
     root = new CNode(*toCopy.root);
+    v_copy_vars_to_existing_tree(toCopy);
+    accuracy_rate=0;
+}
+
+CTree::CTree(CNode *toCopy) {
+    s_name="def_name";
+    root = new CNode(*toCopy);
+    v_push_vars_to_vector_based_on_node(toCopy);
+    accuracy_rate=0;
 }
 
 CTree::~CTree() {
@@ -116,6 +129,7 @@ CNode* CTree::getLeaf() {
 void CTree::operator=(const CTree &tree) {
     s_name=tree.s_name;
     root = new CNode(*tree.root);
+    vClearVariables();
     v_copy_vars_to_existing_tree(tree);
 }
 
@@ -263,6 +277,105 @@ void CTree::v_copy_vars_to_existing_tree(const CTree &copyFromTree) {
             variables.push_back(copyFromTree.variables.at(i));
         }
     }
+}
+
+CNode *CTree::getRoot() {
+    return root;
+}
+
+void CTree::vMutation() {
+    CTree *generatedTree = RandomTreeGenerator::generateRandomTreeOrLeaf();
+    *this = *this + *generatedTree;
+}
+
+std::vector<CTree*> CTree::vtCrossbreed(CTree *tree) {
+    std::vector<CTree*> children;
+    CTree *first_child, *second_child;
+    first_child = new CTree(*this);
+    second_child = new CTree(*tree);
+
+    CTree *subtree_this = first_child->randomSubtree();
+    CTree *subtree_tree = second_child->randomSubtree();
+
+    first_child->joinSubtree(subtree_tree);
+    second_child->joinSubtree(subtree_this);
+    children.push_back(first_child);
+    children.push_back(second_child);
+    return children;
+}
+
+CTree* CTree::randomSubtree(){
+    CTree* tree;
+    tree = NULL;
+    if (root){
+        if (StringUtils::bIsTwoArgumentsOperator(root->sGetData())){
+            int random_left_right_child = rand()%2;
+            if (random_left_right_child==0){
+                CNode *leftChild = root->child_nodes.at(0);
+                tree = new CTree(leftChild);
+                leftChild->vRemoveChildren();
+                leftChild->vSetEmptyData();
+            }
+            else{
+                CNode *rightChild = root->child_nodes.at(1);
+                tree = new CTree(rightChild);
+                rightChild->vRemoveChildren();
+                rightChild->vSetEmptyData();
+            }
+        }
+    }
+    return tree;
+}
+
+void CTree::v_push_vars_to_vector_based_on_node(CNode *node) {
+    if (StringUtils::bIsTwoArgumentsOperator(node->sGetData())){
+        v_push_vars_to_vector_based_on_node(node->child_nodes.at(0));
+        v_push_vars_to_vector_based_on_node(node->child_nodes.at(1));
+    }
+    else if (StringUtils::bIsOneArgumentOperator(node->sGetData())){
+        v_push_vars_to_vector_based_on_node(node->child_nodes.at(0));
+    }
+    else if (StringUtils::bIsVariable(node->sGetData())){
+        if (!b_is_element_present_in_variables_vector(node->sGetData())){
+            variables.push_back(node->sGetData());
+        }
+    }
+}
+
+void CTree::joinSubtree(CTree *subtree) {
+    if (StringUtils::bIsTwoArgumentsOperator(root->sGetData())){
+        if (root->child_nodes.at(0)->bIsNodeEmpty()){
+            delete root->child_nodes.at(0);
+            root->child_nodes.at(0) = subtree->getRoot();
+            subtree->getRoot()->parent=root;
+            vClearVariables();
+            v_push_vars_to_vector_based_on_node(this->getRoot());
+        }
+        else if (root->child_nodes.at(1)->bIsNodeEmpty()){
+            delete root->child_nodes.at(1);
+            root->child_nodes.at(1) = subtree->getRoot();
+            subtree->getRoot()->parent=root;
+            v_push_vars_to_vector_based_on_node(subtree->getRoot());
+            vClearVariables();
+            v_push_vars_to_vector_based_on_node(this->getRoot());
+        }
+    }
+}
+
+void CTree::setAccuracyRate(double iAccuracyRate) {
+    accuracy_rate = iAccuracyRate;
+}
+
+double CTree::getAccuracyRate() {
+    return accuracy_rate;
+}
+
+bool CTree::hasVariables(int iAmount) {
+    return variables.size()==iAmount;
+}
+
+bool CTree::operator<(CTree &tree) {
+    return accuracy_rate<tree.accuracy_rate;
 }
 
 

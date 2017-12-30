@@ -5,6 +5,7 @@
 #include "StringUtils.h"
 
 #include <sstream>
+#include <time.h>
 
 
 CNode::CNode() {
@@ -55,8 +56,19 @@ CNode* CNode::nGetLeaf() {
     if (bIsLeaf()){
         return this;
     }
-    //if it is not leaf (leaf is variable or number value) then it is operator, so we takes FIRST_OPERAND, which means first child of operator
-    return child_nodes.at(FIRST_OPERAND)->nGetLeaf();
+    if (child_nodes.size()==1){
+        return child_nodes.at(0)->nGetLeaf();
+    }
+    if (child_nodes.size()==2){
+        srand(time(NULL));
+        int random_child = rand()%2;
+        if (random_child==0){
+            return child_nodes.at(0)->nGetLeaf();
+        }
+        else{
+            return child_nodes.at(1)->nGetLeaf();
+        }
+    }
 }
 
 bool CNode::bIsLeaf() {
@@ -124,6 +136,14 @@ CNode *CNode::getChild(int iChildOffset) {
         return child_nodes.at(iChildOffset);
     }
     return NULL;
+}
+
+bool CNode::hasChildrenAmount(int childrenAmount) {
+    return child_nodes.size()==childrenAmount;
+}
+
+void CNode::vSetEmptyData() {
+    s_data = "root";
 }
 
 

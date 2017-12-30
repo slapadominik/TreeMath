@@ -1,67 +1,68 @@
 #include <time.h>
 #include <iostream>
-#include "RandomNodeGenerator.h"
+#include "RandomTreeGenerator.h"
 #include "StringUtils.h"
 
-const char RandomNodeGenerator::ca_variables[] = {'a','b','c','d','e','f','g','h','i','j','k', 'l', 'm', 'n', 'o', 'p','q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-const char RandomNodeGenerator::ca_two_arguments_operators[] = {'+','-','*','/'};
-const std::string RandomNodeGenerator::ca_one_argument_operators[] = {"sin", "cos"};
+const char RandomTreeGenerator::ca_variables[] = {'x', 'y'};
+const char RandomTreeGenerator::ca_two_arguments_operators[] = {'+','-','*','/'};
+const std::string RandomTreeGenerator::ca_one_argument_operators[] = {"sin", "cos"};
 
 
-CNode* RandomNodeGenerator::generateRandomTree() {
-    CNode* root = new CNode();
-    srand(time(NULL));
-    int i_random_choice = rand()%2;
-    std::cout<<"GenerateRandomTree random_num: "<<i_random_choice<<std::endl;
-    if (i_random_choice==RANDOM_CHOICE_GENERATE_LEAF){
-        generateRandomLeaf(root);
-    }
-    else{ //RANDOM_CHOICE_GENERATE_NODES
-        setRootDataToOperator(root);
-        generateRandomNodes(root);
-    }
-    return root;
+CTree* RandomTreeGenerator::generateRandomTree() {
+    CTree* tree;
+    tree = new CTree();
+    CNode* root = tree->getRoot();
+    setRootDataToOperator(root);
+    generateRandomNodes(root, tree);
+
+    return tree;
 }
 
-void RandomNodeGenerator::generateRandomLeaf(CNode *node) {
+void RandomTreeGenerator::generateRandomLeaf(CTree *tree) {
+    CNode *node = tree->getRoot();
     int i_random_variables_or_numbers = rand()%2+2;
-    std::cout<<"GenerateRandomLeaf random_num: "<<i_random_variables_or_numbers<<std::endl;
     if (i_random_variables_or_numbers==RANDOM_CHOICE_GET_NUMBER){
         int i_random_number = rand()%RANDOM_MAX_GENERATE_NUMBER;
-        std::cout<<i_random_number<<std::endl;
         std::string s_random_number = StringUtils::intToString(i_random_number);
         node->vSetDataAndCreateChildNodesAndSetParent(s_random_number, 0);
+
     }
     else { //RANDOM_CHOICE_GET_VARIABLE
         int i_random_letter = rand()%ALPHABET_SIZE;
         std::string s_random_letter = StringUtils::charToString(ca_variables[i_random_letter]);
         node->vSetDataAndCreateChildNodesAndSetParent(s_random_letter, 0);
+        tree->variables.push_back(s_random_letter);
     }
 
 }
 
-void RandomNodeGenerator::generateRandomNodes(CNode *node) {
+void RandomTreeGenerator::generateRandomNodes(CNode *node,CTree *workingTree) {
     if (StringUtils::bIsTwoArgumentsOperator(node->sGetData())){
         node->vCreateChildNodes(2);
         node->getChild(0)->vSetData(generateRandomDataForNode());
-        generateRandomNodes(node->getChild(0));
+        generateRandomNodes(node->getChild(0), workingTree);
         node->getChild(1)->vSetData(generateRandomDataForNode());
-        generateRandomNodes(node->getChild(1));
+        generateRandomNodes(node->getChild(1),workingTree);
     }
     else if (StringUtils::bIsOneArgumentOperator(node->sGetData())){
         node->vCreateChildNodes(1);
         node->getChild(0)->vSetData(generateRandomDataForNode());
-        generateRandomNodes(node->getChild(0));
+        generateRandomNodes(node->getChild(0),workingTree);
+    }
+    else if (StringUtils::bIsVariable(node->sGetData())){
+        if (!workingTree->b_is_element_present_in_variables_vector(node->sGetData())){
+                workingTree->variables.push_back(node->sGetData());
+        }
     }
 }
 
-void RandomNodeGenerator::setRootDataToOperator(CNode *root) {
+void RandomTreeGenerator::setRootDataToOperator(CNode *root) {
     int i_random_choice_two_arguments_operator = rand()%TWO_ARGUMENTS_OPERATOR_ARRAY_SIZE;
     std::string random_operator = StringUtils::charToString(ca_two_arguments_operators[i_random_choice_two_arguments_operator]);
     root->vSetData(random_operator);
 }
 
-std::string RandomNodeGenerator::generateRandomDataForNode() {
+std::string RandomTreeGenerator::generateRandomDataForNode() {
     std::string data;
     int i_random_data_type = rand()%4;
     if (i_random_data_type==RANDOM_CHOICE_GET_TWO_ARGUMENTS_OPERATOR){
@@ -73,33 +74,50 @@ std::string RandomNodeGenerator::generateRandomDataForNode() {
     else if(i_random_data_type==RANDOM_CHOICE_GET_NUMBER){
         data = getRandomNumber(20);
     }
-    else if(i_random_data_type==RANDOM_CHOICE_GET_VARIABLE){
-        data = getRandomVariable();
+    else if (i_random_data_type==RANDOM_CHOICE_GET_VARIABLE){
+            data = getRandomVariable();
     }
+
     return data;
 }
 
-std::string RandomNodeGenerator::getRandomNumber(int maxNumber) {
-    int i_random_number = rand()%maxNumber;
+std::string RandomTreeGenerator::getRandomNumber(int maxNumber) {
+    int i_random_number = rand()%maxNumber+1;
     std::string number = StringUtils::intToString(i_random_number);
     return number;
 }
 
-std::string RandomNodeGenerator::getRandomTwoArgumentOperator() {
+std::string RandomTreeGenerator::getRandomTwoArgumentOperator() {
     int i_random_choice_two_arguments_operator = rand()%TWO_ARGUMENTS_OPERATOR_ARRAY_SIZE;
     std::string random_operator = StringUtils::charToString(ca_two_arguments_operators[i_random_choice_two_arguments_operator]);
     return random_operator;
 }
 
-std::string RandomNodeGenerator::getRandomOneArgumentOperator() {
+std::string RandomTreeGenerator::getRandomOneArgumentOperator() {
     int i_random_choice_one_argument_operator = rand()%ONE_ARGUMENT_OPERATOR_ARRAY_SIZE;
     return ca_one_argument_operators[i_random_choice_one_argument_operator];
 }
 
-std::string RandomNodeGenerator::getRandomVariable(){
+std::string RandomTreeGenerator::getRandomVariable(){
     int i_random_choice_variable = rand()%ALPHABET_SIZE;
     std::string random_variable = StringUtils::charToString(ca_variables[i_random_choice_variable]);
     return random_variable;
+}
+
+CTree *RandomTreeGenerator::generateRandomTreeOrLeaf() {
+    CTree* tree;
+    tree = new CTree();
+    int i_rand_choice = rand()%2;
+    if (i_rand_choice==0){
+        generateRandomLeaf(tree);
+    }
+    else{
+        CNode* root = tree->getRoot();
+        setRootDataToOperator(root);
+        generateRandomNodes(root, tree);
+    }
+
+    return tree;
 }
 
 

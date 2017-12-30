@@ -2,7 +2,7 @@
 #include <sstream>
 #include "Interface.h"
 #include "WrongVariablesValuesAmountException.h"
-#include "RandomNodeGenerator.h"
+#include "RandomTreeGenerator.h"
 
 
 Interface::Interface() {

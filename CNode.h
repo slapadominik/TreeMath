@@ -30,6 +30,8 @@ public:
     std::string sGetData();
     CNode* nGetLeaf();
     CNode* getChild(int iChildOffset);
+    bool hasChildrenAmount(int childrenAmount);
+    void vSetEmptyData();
 
 private:
     std::string s_data;
