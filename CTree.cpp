@@ -7,7 +7,11 @@
 #include "StringUtils.h"
 #include "RandomTreeGenerator.h"
 
+int CTree::objectsCreated = 0;
+
 CTree::CTree() {
+    objectsCreated+=1;
+    std::cout<<"Konstruktor: "<<objectsCreated<<std::endl;
     s_name="def_name";
     root = new CNode();
     accuracy_rate=0;
@@ -15,12 +19,16 @@ CTree::CTree() {
 }
 
 CTree::CTree(std::string sName) {
+    objectsCreated+=1;
+    std::cout<<"Konstruktor: "<<objectsCreated<<std::endl;
     s_name=sName;
     root = new CNode();
     accuracy_rate=0;
 }
 
 CTree::CTree(CTree &toCopy) {
+    objectsCreated+=1;
+    std::cout<<"Konstruktor: "<<objectsCreated<<std::endl;
     s_name = toCopy.s_name+"_copy";
     root = new CNode(*toCopy.root);
     v_copy_vars_to_existing_tree(toCopy);
@@ -28,6 +36,8 @@ CTree::CTree(CTree &toCopy) {
 }
 
 CTree::CTree(CNode *toCopy) {
+    objectsCreated+=1;
+    std::cout<<"Konstruktor: "<<objectsCreated<<std::endl;
     s_name="def_name";
     root = new CNode(*toCopy);
     v_push_vars_to_vector_based_on_node(toCopy);
@@ -36,6 +46,8 @@ CTree::CTree(CNode *toCopy) {
 
 CTree::~CTree() {
     bClearTree();
+    std::cout<<"Destruktor: "<<objectsCreated<<std::endl;
+    objectsCreated--;
 }
 
 bool CTree::bPrintTree(){
@@ -284,8 +296,20 @@ CNode *CTree::getRoot() {
 }
 
 void CTree::vMutation() {
-    CTree *generatedTree = RandomTreeGenerator::generateRandomTreeOrLeaf();
-    *this = *this + *generatedTree;
+    CNode *generatedTree = RandomTreeGenerator::generateRandomTreeOrLeaf();
+    if (root->hasChildrenAmount(2)) {
+        int rand_left_right_children = rand() % 2;
+        if (rand_left_right_children == 0) { //left
+            delete root->child_nodes.at(0);
+            root->child_nodes.at(0) = generatedTree;
+        } else if (rand_left_right_children == 1) { //right
+            delete root->child_nodes.at(1);
+            root->child_nodes.at(1) = generatedTree;
+        }
+        generatedTree->parent = root;
+    }
+    variables.clear();
+    v_push_vars_to_vector_based_on_node(root);
 }
 
 std::vector<CTree*> CTree::vtCrossbreed(CTree *tree) {
@@ -293,38 +317,52 @@ std::vector<CTree*> CTree::vtCrossbreed(CTree *tree) {
     CTree *first_child, *second_child;
     first_child = new CTree(*this);
     second_child = new CTree(*tree);
+    int *first_tree = new int(-1);
+    int *second_tree = new int(-1);
 
-    CTree *subtree_this = first_child->randomSubtree();
-    CTree *subtree_tree = second_child->randomSubtree();
+    CNode *subtree_this = first_child->randomSubtree(first_tree);
+    CNode *subtree_tree = second_child->randomSubtree(second_tree);
 
-    first_child->joinSubtree(subtree_tree);
-    second_child->joinSubtree(subtree_this);
+    if (*first_tree==0){
+        first_child->root->child_nodes.at(0)=subtree_tree;
+    }
+    else if (*first_tree==1){
+        first_child->root->child_nodes.at(1)=subtree_tree;
+    }
+    if (*second_tree==0){
+        second_child->root->child_nodes.at(0)=subtree_this;
+    }
+    else if (*second_tree==1){
+        second_child->root->child_nodes.at(1)=subtree_this;
+    }
+    subtree_this->parent = second_child->root;
+    subtree_tree->parent = first_child->root;
+
+    first_child->v_push_vars_to_vector_based_on_node(subtree_tree);
+    second_child->v_push_vars_to_vector_based_on_node(subtree_this);
+    delete first_tree;
+    delete second_tree;
     children.push_back(first_child);
     children.push_back(second_child);
     return children;
 }
 
-CTree* CTree::randomSubtree(){
-    CTree* tree;
-    tree = NULL;
+CNode* CTree::randomSubtree(int *whichChild){
+    CNode* child;
     if (root){
         if (StringUtils::bIsTwoArgumentsOperator(root->sGetData())){
             int random_left_right_child = rand()%2;
             if (random_left_right_child==0){
-                CNode *leftChild = root->child_nodes.at(0);
-                tree = new CTree(leftChild);
-                leftChild->vRemoveChildren();
-                leftChild->vSetEmptyData();
+                child = root->child_nodes.at(0);
+                *whichChild=0;
             }
             else{
-                CNode *rightChild = root->child_nodes.at(1);
-                tree = new CTree(rightChild);
-                rightChild->vRemoveChildren();
-                rightChild->vSetEmptyData();
+                *whichChild=1;
+                child = root->child_nodes.at(1);
             }
         }
     }
-    return tree;
+    return child;
 }
 
 void CTree::v_push_vars_to_vector_based_on_node(CNode *node) {

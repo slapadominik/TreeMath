@@ -11,15 +11,15 @@
 int main() {
     srand(time(NULL));
 
+
     GeneticProgramming geneticProgramming;
     geneticProgramming.initializeDataFromFile("data_function.txt");
     geneticProgramming.initializePopulation(50);
     geneticProgramming.evaluate();
-    for (int i=0;i<3;i++){
-        geneticProgramming.vRunIteration();
-        geneticProgramming.vAfterIteration();
-    }
     geneticProgramming.vRunIteration();
+    geneticProgramming.vAfterIteration();
+    geneticProgramming.vRunIteration();
+    CTree* most_matching_tree = geneticProgramming.vChooseMostMatchingTree();
     geneticProgramming.printBeginningPopulation();
 
     std::cout<<"---------"<<std::endl;
@@ -28,7 +28,9 @@ int main() {
     geneticProgramming.printChildrenPopulation();
     std::cout<<"---------"<<std::endl;
     std::cout<<"---------"<<std::endl;
-    std::cout<<"---------"<<std::endl;
+    most_matching_tree->bPrintTree();
+    std::cout<<most_matching_tree->getAccuracyRate()<<std::endl;
+
 
     return 0;
 }

@@ -40,7 +40,7 @@ public:
     void vPrintVariables();
     int i_get_variable_offset(const std::string &s);
     double dCalculateValue(CNode* node, std::vector<double> variablesValues);
-    CTree* randomSubtree();
+    CNode* randomSubtree(int *whichChild);
     void joinSubtree(CTree *subtree);
     void vMutation();
     std::vector<CTree*> vtCrossbreed(CTree *tree);
@@ -52,6 +52,7 @@ private:
     CNode *root;
     std::vector<std::string> variables;
     double accuracy_rate;
+    static int objectsCreated;
 
     std::vector<std::string> split(std::string &stringToSplit, char regnex);
     bool b_is_element_present_in_variables_vector(std::string element);

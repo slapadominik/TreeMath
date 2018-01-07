@@ -104,11 +104,11 @@ std::string RandomTreeGenerator::getRandomVariable(){
     return random_variable;
 }
 
-CTree *RandomTreeGenerator::generateRandomTreeOrLeaf() {
+CNode* RandomTreeGenerator::generateRandomTreeOrLeaf() {
     CTree* tree;
     tree = new CTree();
-    int i_rand_choice = rand()%2;
-    if (i_rand_choice==0){
+    int i_rand_choice = rand()%3;
+    if (i_rand_choice==0 || i_rand_choice==1){
         generateRandomLeaf(tree);
     }
     else{
@@ -116,8 +116,9 @@ CTree *RandomTreeGenerator::generateRandomTreeOrLeaf() {
         setRootDataToOperator(root);
         generateRandomNodes(root, tree);
     }
-
-    return tree;
+    CNode *node = new CNode(*tree->root);
+    delete tree;
+    return node;
 }
 
 

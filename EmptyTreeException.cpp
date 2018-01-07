@@ -5,7 +5,7 @@
 #include "EmptyTreeException.h"
 
 EmptyTreeException::EmptyTreeException(std::string msg) {
-this->msg=msg;
+    this->msg=msg;
 }
 
 std::string EmptyTreeException::getMessage() {

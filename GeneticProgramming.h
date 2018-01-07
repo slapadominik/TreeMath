@@ -12,7 +12,7 @@ class GeneticProgramming {
 public:
     GeneticProgramming();
     ~GeneticProgramming();
-    bool initializeDataFromFile(std::string fileName);
+    void initializeDataFromFile(std::string fileName);
     void initializePopulation(int iTreesAmount);
     void evaluate();
     void evaluateChildrenPopulation();
@@ -27,7 +27,7 @@ public:
     void mutation();
     void vRunIteration();
     void vAfterIteration();
-
+    CTree* vChooseMostMatchingTree();
 private:
     std::vector<double> x_y_xy_values;
     std::vector<CTree*> beginning_population;

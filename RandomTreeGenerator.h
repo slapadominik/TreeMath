@@ -16,7 +16,7 @@
 class RandomTreeGenerator {
 public:
     static CTree* generateRandomTree();
-    static CTree* generateRandomTreeOrLeaf();
+    static CNode* generateRandomTreeOrLeaf();
 private:
     static void generateRandomLeaf(CTree *tree);
     static void generateRandomNodes(CNode* node, CTree *workingTree);
